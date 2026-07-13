@@ -7,8 +7,7 @@ local shell = require("shell")
 
 local args = shell.parse(...)
 local target = args[1] or "/home/seui"
-local rawBase = "https://raw.githubusercontent.com/mnaccccs/gtnh-seui/main/"
-local mirrorPrefix = "https://github.xutongxin.me/"
+local base = "https://raw.githubusercontent.com/mnaccccs/gtnh-seui/main/"
 local files = {
   "main.lua",
   "config.lua",
@@ -49,16 +48,6 @@ local function download(url)
   local data = table.concat(chunks)
   if data == "" then return nil, "empty response" end
   return data
-end
-
-local function downloadFile(relative)
-  local raw = rawBase .. relative
-  local data, directReason = download(raw)
-  if data then return data, "GitHub Raw" end
-  local mirrorData, mirrorReason = download(mirrorPrefix .. raw)
-  if mirrorData then return mirrorData, "徐同鑫镜像" end
-  return nil, "GitHub Raw: " .. tostring(directReason)
-      .. "; 镜像: " .. tostring(mirrorReason)
 end
 
 local function writeAtomic(path, data)
@@ -106,9 +95,9 @@ for index, relative in ipairs(files) do
     print(string.format("[%d/%d] %s ... 保留现有配置（备份为 config.lua.bak）", index, #files, relative))
   else
     io.write(string.format("[%d/%d] %s ... ", index, #files, relative))
-    local data, sourceOrReason = downloadFile(relative)
+    local data, reason = download(base .. relative)
     if not data then
-      io.stderr:write("失败\n下载失败：" .. tostring(sourceOrReason) .. "\n")
+      io.stderr:write("失败\n下载失败：" .. tostring(reason) .. "\n")
       os.exit(1)
     end
     local ok, writeReason = writeAtomic(target .. "/" .. relative, data)
@@ -116,7 +105,7 @@ for index, relative in ipairs(files) do
       io.stderr:write("失败\n写入失败：" .. tostring(writeReason) .. "\n")
       os.exit(1)
     end
-    print("完成（" .. sourceOrReason .. "）")
+    print("完成")
   end
 end
 
