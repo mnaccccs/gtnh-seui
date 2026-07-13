@@ -79,7 +79,8 @@ if not fs.exists(target) then
 end
 
 local configPath = target .. "/config.lua"
-if fs.exists(configPath) then
+local preserveConfig = fs.exists(configPath)
+if preserveConfig then
   local source = io.open(configPath, "rb")
   if source then
     local old = source:read("*a")
@@ -90,18 +91,22 @@ if fs.exists(configPath) then
 end
 
 for index, relative in ipairs(files) do
-  io.write(string.format("[%d/%d] %s ... ", index, #files, relative))
-  local data, reason = download(base .. relative)
-  if not data then
-    io.stderr:write("失败\n下载失败：" .. tostring(reason) .. "\n")
-    os.exit(1)
+  if relative == "config.lua" and preserveConfig then
+    print(string.format("[%d/%d] %s ... 保留现有配置（备份为 config.lua.bak）", index, #files, relative))
+  else
+    io.write(string.format("[%d/%d] %s ... ", index, #files, relative))
+    local data, reason = download(base .. relative)
+    if not data then
+      io.stderr:write("失败\n下载失败：" .. tostring(reason) .. "\n")
+      os.exit(1)
+    end
+    local ok, writeReason = writeAtomic(target .. "/" .. relative, data)
+    if not ok then
+      io.stderr:write("失败\n写入失败：" .. tostring(writeReason) .. "\n")
+      os.exit(1)
+    end
+    print("完成")
   end
-  local ok, writeReason = writeAtomic(target .. "/" .. relative, data)
-  if not ok then
-    io.stderr:write("失败\n写入失败：" .. tostring(writeReason) .. "\n")
-    os.exit(1)
-  end
-  print("完成")
 end
 
 print("\nSEUI 已安装到 " .. target)

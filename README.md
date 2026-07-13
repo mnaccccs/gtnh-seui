@@ -25,7 +25,7 @@ wget -f https://raw.githubusercontent.com/mnaccccs/gtnh-seui/main/install.lua /t
 /home/seui/main.lua --control
 ```
 
-重新执行安装命令即可更新；安装器会把旧 `config.lua` 备份为 `config.lua.bak`，然后部署仓库中的当前版本。若服务器不能访问 GitHub Raw，则仍需使用文件夹拖入方式。
+重新执行安装命令即可更新；若目标目录已有 `config.lua`，安装器会备份为 `config.lua.bak` 并**保留现有配置，不覆盖方向等本机设置**。若服务器不能访问 GitHub Raw，则仍需使用文件夹拖入方式。
 
 一套适用于 OpenComputers Tier 3 屏幕（160×50）的触摸控制程序，同时监控/调度：
 
