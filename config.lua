@@ -66,8 +66,8 @@ local config = {
   -- ========== 无人机后端 ==========
   droneBackend = "transposer", -- "transposer" / "me_interface" / "manual"
   -- Wiki 全体同步布局：所有转运器摆向一致，并连接同频道共享末影箱。
-  droneSide = sides.down, -- 所有转运器朝共享无人机末影箱的一侧
-  inputSide = sides.up,   -- 所有转运器朝矿机输入总线的一侧
+  droneSide = sides.up,   -- 上方：共享无人机末影箱
+  inputSide = sides.down, -- 下方：矿机输入总线
   allowRandomDrone = false,  -- 缺无人机时是否随机选替代
   -- me_interface 后端：每个无人机等级对应 database 中两种供应物的 1 基槽位
   -- 示例：droneDatabaseSlots = { [8] = {15, 16} }

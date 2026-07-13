@@ -89,11 +89,11 @@ tests/                  主机侧测试，不必复制到 OC
 ```lua
 local sides = require("sides") -- config.lua 顶部已经有这一行
 
-droneSide = sides.down -- 所有转运器朝共享无人机末影箱的一侧
-inputSide = sides.up   -- 所有转运器朝矿机输入总线的一侧
+droneSide = sides.up   -- 上方：共享无人机末影箱
+inputSide = sides.down -- 下方：矿机输入总线
 ```
 
-如果实际摆放就是“末影箱在转运器下方、输入总线在上方”，默认值也不用改。方向不确定时可运行只读工具：
+默认布局现为“末影箱在转运器上方、输入总线在下方”。如果实际摆放不同，再修改这两个方向；方向不确定时可运行只读工具：
 
 ```sh
 lua probe_bindings.lua

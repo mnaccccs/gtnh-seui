@@ -180,7 +180,7 @@ function M.renderHeader(hw, config, now)
   ui.hitboxGroups.header = {}
 
   -- y=1: 标题 + 页签
-  local title = "太空电梯智能控制台 v1.0.5"
+  local title = "太空电梯智能控制台 v1.0.6"
   fillRect(1, 1, W, 1, " ", C.header, C.bg)
   drawText(2, 1, title, C.header, C.bg)
   local tabX = W - 24
