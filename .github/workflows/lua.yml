@@ -1,0 +1,31 @@
+name: Lua checks
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        lua: ["5.2", "5.3"]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Lua
+        run: sudo apt-get update && sudo apt-get install -y lua${{ matrix.lua }}
+      - name: Syntax check
+        run: |
+          find . -name '*.lua' -print0 | xargs -0 -n1 luac${{ matrix.lua }} -p
+      - name: Logic tests
+        run: |
+          lua${{ matrix.lua }} tests/run.lua
+          lua${{ matrix.lua }} tests/ui_smoke.lua
+          lua${{ matrix.lua }} tests/main_simulation.lua
+          lua${{ matrix.lua }} tests/main_crash_simulation.lua 2>/dev/null
+          lua${{ matrix.lua }} tests/store_openos_api.lua
+          lua${{ matrix.lua }} tests/fluid_catalog.lua
+          lua${{ matrix.lua }} tests/probe_bindings_smoke.lua
+          lua${{ matrix.lua }} tests/drone_smoke.lua
+          lua${{ matrix.lua }} tests/drone_wiki_fleet.lua
+          lua${{ matrix.lua }} tests/controller_fleet_smoke.lua
