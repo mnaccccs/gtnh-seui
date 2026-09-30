@@ -51,12 +51,30 @@ function M.routeKey(planet, gas)
 end
 
 function M.populate(model)
+  -- 旧版本曾在每次启动时无条件重加整张目录，导致 seui.dat 里的列表逐次翻倍。
+  -- 这里先按 routeKey 去掉已加载目标里的重复项（保留先出现者，合并 sourceRef），
+  -- 再补齐目录中缺失的条目。无路由信息（"0:0"）的旧条目不参与去重，避免误并不同流体。
   local existing = {}
+  local duplicateIds = {}
   for _, t in ipairs(model.getTargets()) do
     if t.domain == "pump" and t.route then
-      existing[M.routeKey(t.route.planetType, t.route.gasType)] = t
+      local key = M.routeKey(t.route.planetType, t.route.gasType)
+      if key ~= "0:0" then
+        local prev = existing[key]
+        if prev then
+          if not prev.sourceRef and t.sourceRef then prev.sourceRef = t.sourceRef end
+          table.insert(duplicateIds, t.id)
+        else
+          existing[key] = t
+        end
+      end
     end
   end
+  local removed = 0
+  for _, id in ipairs(duplicateIds) do
+    if model.removeById(id) then removed = removed + 1 end
+  end
+
   local added = 0
   for order, e in ipairs(M.entries) do
     local planet, gas, label, rate, aliases = e[1],e[2],e[3],e[4],e[5]
@@ -73,7 +91,7 @@ function M.populate(model)
       added=added+1
     end
   end
-  return added
+  return added, removed
 end
 
 return M

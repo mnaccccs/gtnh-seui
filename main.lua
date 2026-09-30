@@ -78,11 +78,22 @@ local function loadOrCreateConfig()
       ui.setState(data.ui)
     end
     if data.targets and #data.targets > 0 then
+      local seenIds = {}
       for _, t in ipairs(data.targets) do
-        model.addTarget(t)
+        if t.id and seenIds[t.id] then
+          log.warn("main", "忽略重复保存的目标: " .. tostring(t.id))
+          app.configDirty = true  -- 需要重写清理后的配置
+        else
+          if t.id then seenIds[t.id] = true end
+          model.addTarget(t)
+        end
       end
     end
-    fluidCatalog.populate(model)
+    local _, removed = fluidCatalog.populate(model)
+    if removed and removed > 0 then
+      log.warn("main", "启动去重：移除 " .. removed .. " 个重复流体目标")
+      app.configDirty = true
+    end
     log.info("main", "从配置加载 " .. #model.getTargets() .. " 个目标")
   else
     log.info("main", "无配置文件: " .. tostring(err))
