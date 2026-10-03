@@ -1,7 +1,7 @@
-# SEUI — GTNH 2.9.0-beta-1 太空电梯控制台
+# SEUI — GTNH 2.9.0-RC-1 太空电梯控制台
 
-[![GTNH](https://img.shields.io/badge/GTNH-2.9.0--beta--1-blue)](https://github.com/GTNewHorizons/GT-New-Horizons-Modpack)
-[![OpenComputers](https://img.shields.io/badge/OpenComputers-1.12.44--GTNH-green)](https://github.com/GTNewHorizons/OpenComputers)
+[![GTNH](https://img.shields.io/badge/GTNH-2.9.0--RC--1-blue)](https://github.com/GTNewHorizons/GT-New-Horizons-Modpack)
+[![OpenComputers](https://img.shields.io/badge/OpenComputers-1.12.62--GTNH-green)](https://github.com/GTNewHorizons/OpenComputers)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 ## 从 GitHub 直接安装
@@ -67,7 +67,7 @@ tests/                  主机侧测试，不必复制到 OC
 
 注意：`--readonly` 只监控和导入目标，绝不会修改钻机/矿机参数或启停机器；要让程序实际控制机器，必须运行 `--control`。当前模式会显示在 UI 顶部 `mode:` 后。
 
-钻机页内置 2.9.0-beta-1 的全部 40 种可抽取流体、星球/气体路由和基础流量。未在请求器中配置的条目默认 `关闭/0`，不会参与调度；请求器导入会按星球/气体路由合并并启用对应条目。选中流体后可点“输入”，也可直接在键盘键入数字打开目标量输入框，支持 `10M`、`1.5G`、`500T`，按 Enter 保存。
+钻机页内置 2.9.0-RC-1（GT5u 5.09.54.183）的全部 40 种可抽取流体、星球/气体路由和基础流量。未在请求器中配置的条目默认 `关闭/0`，不会参与调度；请求器导入会按星球/气体路由合并并启用对应条目。选中流体后可点“输入”，也可直接在键盘键入数字打开目标量输入框，支持 `10M`、`1.5G`、`500T`，按 Enter 保存。
 
 ## 硬件
 
@@ -124,9 +124,12 @@ lua probe_bindings.lua
 
 ## 重要限制
 
+- RC-1 适配说明（GT5u 5.09.54.183 / OpenComputers 1.12.62-GTNH）：与 beta-1 相比，泵/钻机的 OC 参数键（`recipe{N}.planetType`、`recipe{N}.gasType`、`batch`、`distance`、`parallel`）、40 种流体路由与无人机物品 `gtnhintergalactic:item.MiningDrone`（damage=等级-1）均无变化，旧配置无需迁移。RC-1 钻机新增 `cycle`/`range`/`step` 参数键，本程序暂不使用。
+- OC 网络组件数受 CPU 等级限制（T1=8 / T2=12 / T3=16）：屏幕、键盘、GPU、每个 Adapter、每台泵/钻机、每个转运器各占 1 个组件。接近上限时新接入的机器不会出现在 `component.list` 里，超限则电脑直接停机——若 SYSTEM 页 `miners` 计数少于实际台数，先核对组件计数与 Adapter/MFU 接线，而不是怀疑程序识别。
+
 - 本地 `/etc/seui.dat` 是权威配置；level maintainer 只是导入源，因为其 OC `setSlot()` 写入路径受 32 位整数限制，不能保存 15G–500T 目标。
 - 流体数量优先使用 AE 栈的 `.size`，避免 `.amount` 的约 2.147G 上限。
-- beta-1 新参数列表没有公开矿机 overdrive 键，因此程序不会伪造 OD 写入。
+- RC-1 矿机 OC 参数键为 `distance`/`parallel`/`cycle`/`range`/`step`（无 overdrive 键），因此程序不会伪造 OD 写入。
 - `--control` 会真实启停机器；先运行只读模式。
 - 若发生未捕获异常，程序会先恢复终端，再显示并保留完整堆栈，直到按键或触摸确认；同一报告会写入 `/home/seui-crash.log`。
 

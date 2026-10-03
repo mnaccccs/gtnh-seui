@@ -495,6 +495,14 @@ function M.renderSystemPage(config)
     table.insert(lines, "snapshot error: " .. snap.error)
   end
 
+  -- 组件预算：OC CPU 有网络组件数上限（T1=8 T2=12 T3=16）。
+  -- 接近上限时新接入的泵/钻机会从 component.list 中“消失”，这是硬件层限制而非程序问题。
+  local okCount, compCount = pcall(computer.componentCount)
+  if okCount and type(compCount) == "number" then
+    table.insert(lines, string.format(
+      "components: %d  (CPU 上限: T1=8 T2=12 T3=16，超限会直接停机)", compCount))
+  end
+
   for _, line in ipairs(lines) do
     drawText(2, y, format.fit(line, 78), C.fg, C.bg)
     y = y + 1
@@ -505,9 +513,20 @@ function M.renderSystemPage(config)
   drawText(80, my, "=== 机器状态 ===", C.header, C.bg)
   my = my + 1
 
-  local count = 0
+  -- 按地址排序保证多机器时列表稳定；不设固定台数上限，占满右栏直到屏幕底部。
+  local machines = {}
   for addr, w in pairs(ws) do
-    if count < 5 then
+    machines[#machines + 1] = { address = addr, worker = w }
+  end
+  table.sort(machines, function(a, b) return a.address < b.address end)
+
+  local hidden = 0
+  for _, m in ipairs(machines) do
+    local addr, w = m.address, m.worker
+    local rows = w.lastError and 2 or 1
+    if my + rows - 1 > H then
+      hidden = hidden + 1
+    else
       local short = addr:sub(1, 8)
       local line = string.format("%s  %-12s  %s",
         short, w.phase, w.servingTarget and w.servingTarget:sub(1, 20) or "-")
@@ -520,8 +539,11 @@ function M.renderSystemPage(config)
         drawText(80, my, "  err: " .. format.fit(w.lastError, 72), C.fault, C.bg)
       end
       my = my + 1
-      count = count + 1
     end
+  end
+  if hidden > 0 and my <= H then
+    drawText(80, my, string.format("  ... 还有 %d 台未显示(屏幕高度限制)", hidden), C.dim, C.bg)
+    my = my + 1
   end
 
   -- 日志 (底部)

@@ -18,7 +18,7 @@ function M.formatAmount(n)
   end
 end
 
--- OpenComputers 1.12.44 的 unicode.wtrunc 在请求宽度大于字符串实际宽度时
+-- OpenComputers 1.12.62 的 unicode.wtrunc 在请求宽度大于字符串实际宽度时
 -- 会越过字符串末尾并抛出 `index N, length N`。它使用严格截断阈值，
 -- 所以要先测宽；确需截断时传 width+1，才能保留恰好装得下的末字符。
 local function truncateToWidth(text, width)

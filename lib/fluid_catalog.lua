@@ -1,5 +1,5 @@
--- GTNH 2.9.0-beta-1 太空钻机全部 40 种流体目录
--- 路由和基础抽取速度来自 GT5-Unofficial 5.09.52.594 SpacePumpingRecipes。
+-- GTNH 2.9.0-RC-1 太空钻机全部 40 种流体目录
+-- 路由和基础抽取速度来自 GT5-Unofficial 5.09.54.183 SpacePumpingRecipes（与 5.09.52.594 完全一致）。
 
 local M = {}
 

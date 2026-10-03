@@ -21,6 +21,7 @@ jobs:
         run: |
           lua${{ matrix.lua }} tests/run.lua
           lua${{ matrix.lua }} tests/ui_smoke.lua
+          lua${{ matrix.lua }} tests/ui_system_page.lua
           lua${{ matrix.lua }} tests/main_simulation.lua
           lua${{ matrix.lua }} tests/main_crash_simulation.lua 2>/dev/null
           lua${{ matrix.lua }} tests/store_openos_api.lua

@@ -9,7 +9,7 @@ local M = {}
 
 local DATA_FILE = "/etc/seui.dat"
 
--- OpenOS 1.12.44 的反序列化函数名是 unserialize；host mock/部分兼容库可能叫 deserialize。
+-- OpenOS 1.12.62 的反序列化函数名是 unserialize；host mock/部分兼容库可能叫 deserialize。
 local function decode(content)
   local fn = serialization.unserialize or serialization.deserialize
   if type(fn) ~= "function" then return nil, "unserialize unavailable" end

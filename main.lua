@@ -1,6 +1,6 @@
 -- SEUI main.lua
 -- 太空电梯双业务 UI 主入口
--- GTNH 2.9.0-beta-1 / OpenComputers 1.12.44-GTNH
+-- GTNH 2.9.0-RC-1 / OpenComputers 1.12.62-GTNH
 -- Lua 5.2/5.3 双兼容
 
 local component = require("component")
